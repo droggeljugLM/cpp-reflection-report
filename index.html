@@ -107,6 +107,7 @@
                     <a href="#whatis" class="nav-link font-medium rounded-md px-4 py-2">反射是什么</a>
                     <a href="#era" class="nav-link font-medium rounded-md px-4 py-2">模拟时代</a>
                     <a href="#progress" class="nav-link font-medium rounded-md px-4 py-2">C++的进展</a>
+                    <a href="#new_paradigm" class="nav-link font-medium rounded-md px-4 py-2">新范式</a>
                     <a href="#paradigm" class="nav-link font-medium rounded-md px-4 py-2">范式转变</a>
                     <a href="#liberation" class="nav-link font-medium rounded-md px-4 py-2">伟大的解放</a>
                     <a href="#conclusion" class="nav-link font-medium rounded-md px-4 py-2">结论</a>
@@ -329,6 +330,59 @@ int main() {
                 </div>
             </section>
 
+            <section id="new_paradigm" class="content-section">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold text-center mb-2 text-slate-800">新范式</h2>
+                    <p class="text-xl text-center text-blue-600 mb-8">零开销元编程</p>
+                    <p class="mb-10 text-slate-600 leading-relaxed">经过多年的探索和讨论，C++ 社区终于迎来了一个与语言核心哲学完美契合的解决方案。提案 P2996 中定义的静态反射机制，并非对其他语言运行时反射的简单模仿，而是一个纯粹的编译期方案，它严格遵循 C++ 的“零开销抽象”原则。</p>
+                    <div class="space-y-12">
+                        <div>
+                            <h3 class="text-2xl font-semibold mb-3 text-slate-700">新工具箱：自省、查询、生成</h3>
+                            <p class="mb-4 text-slate-600">C++26 引入了一个新的头文件 <code class="inline-code">&lt;meta&gt;</code>，它提供了元编程所需的核心工具。</p>
+                             <div class="overflow-x-auto mb-4">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="w-1/3">组件</th>
+                                            <th class="w-1/3">语法</th>
+                                            <th class="w-1/3">目的</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>反射运算符</strong></td>
+                                            <td><code class="inline-code">^^entity</code></td>
+                                            <td>将一个代码实体（类型、变量、函数等）转换为一个编译期值。</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>元对象</strong></td>
+                                            <td><code class="inline-code">std::meta::info</code></td>
+                                            <td>一个不透明的编译期句柄，代表被反射的实体。</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>元函数</strong></td>
+                                            <td><code class="inline-code">std::meta::func(info)</code></td>
+                                            <td>在编译期查询元对象的属性（如名称、类型、成员列表）。</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>注入器 (Splicer)</strong></td>
+                                            <td><code class="inline-code">[:info:]</code></td>
+                                            <td>将元对象代表的实体重新注入到代码中，实现代码生成。</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="mb-4 text-slate-600">这套工具协同工作，构成了一个完整的“自省-查询-生成”循环：</p>
+                            <ol class="list-decimal list-inside space-y-2 text-slate-600">
+                                <li><strong>自省 (Introspection)</strong>：使用反射运算符 <code class="inline-code">^^</code> 将一个代码实体，例如一个类型 <code class="inline-code">Person</code>，转换为一个 <code class="inline-code">std::meta::info</code> 类型的编译期常量。这个 <code class="inline-code">info</code> 对象就是 <code class="inline-code">Person</code> 类型在元编程世界的“化身”。</li>
+                                <li><strong>查询 (Querying)</strong>：使用一系列 <code class="inline-code">consteval</code> 元函数来操作 <code class="inline-code">std::meta::info</code> 对象。例如，<code class="inline-code">std::meta::nonstatic_data_members_of(^^Person)</code> 会返回一个包含 <code class="inline-code">Person</code> 所有非静态数据成员的元信息序列。</li>
+                                <li><strong>生成 (Generation)</strong>：使用注入器 <code class="inline-code">[:... :]</code> 将一个 <code class="inline-code">std::meta::info</code> 对象“解冻”，变回它所代表的代码实体，从而实现强大的代码生成能力。</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        
             <section id="paradigm" class="content-section">
                 <div class="max-w-4xl mx-auto">
                     <h2 class="text-3xl font-bold text-center mb-2 text-slate-800">范式转变</h2>
@@ -643,6 +697,7 @@ int main() {
     </script>
 </body>
 </html>
+
 
 
 
