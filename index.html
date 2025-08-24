@@ -376,7 +376,7 @@ int main() {
                             <ol class="list-decimal list-inside space-y-2 text-slate-600">
                                 <li><strong>自省 (Introspection)</strong>：使用反射运算符 <code class="inline-code">^^</code> 将一个代码实体，例如一个类型 <code class="inline-code">Person</code>，转换为一个 <code class="inline-code">std::meta::info</code> 类型的编译期常量。这个 <code class="inline-code">info</code> 对象就是 <code class="inline-code">Person</code> 类型在元编程世界的“化身”。</li>
                                 <li><strong>查询 (Querying)</strong>：使用一系列 <code class="inline-code">consteval</code> 元函数来操作 <code class="inline-code">std::meta::info</code> 对象。例如，<code class="inline-code">std::meta::nonstatic_data_members_of(^^Person)</code> 会返回一个包含 <code class="inline-code">Person</code> 所有非静态数据成员的元信息序列。</li>
-                                <li><strong>生成 (Generation)</strong>：使用注入器 <code class="inline-code">[:... :]</code> 将一个 <code class="inline-code">std::meta::info</code> 对象“解冻”，变回它所代表的代码实体，从而实现强大的代码生成能力。</li>
+                                <li><strong>生成 (Generation)</strong>：使用注入器 <code class="inline-code">[:...:]</code> 将一个 <code class="inline-code">std::meta::info</code> 对象“解冻”，变回它所代表的代码实体，从而实现强大的代码生成能力。</li>
                             </ol>
                                                         <p class="my-4 text-slate-600">让我们通过一个简单的例子来直观感受这种变革。下面是使用 C++26 反射实现的通用 <code class="inline-code">print_struct</code> 函数，它完美地展示了这三个步骤：</p>
                             <div class="code-toggle bg-slate-100 p-3 rounded-md text-slate-700 font-semibold hover:bg-slate-200 flex justify-between items-center"><span>查看 <code class="inline-code">print_struct</code> 示例代码 <span>▶</span></span></div>
@@ -732,6 +732,7 @@ int main() {
     </script>
 </body>
 </html>
+
 
 
 
