@@ -378,6 +378,41 @@ int main() {
                                 <li><strong>查询 (Querying)</strong>：使用一系列 <code class="inline-code">consteval</code> 元函数来操作 <code class="inline-code">std::meta::info</code> 对象。例如，<code class="inline-code">std::meta::nonstatic_data_members_of(^^Person)</code> 会返回一个包含 <code class="inline-code">Person</code> 所有非静态数据成员的元信息序列。</li>
                                 <li><strong>生成 (Generation)</strong>：使用注入器 <code class="inline-code">[:... :]</code> 将一个 <code class="inline-code">std::meta::info</code> 对象“解冻”，变回它所代表的代码实体，从而实现强大的代码生成能力。</li>
                             </ol>
+                                                        <p class="my-4 text-slate-600">让我们通过一个简单的例子来直观感受这种变革。下面是使用 C++26 反射实现的通用 <code class="inline-code">print_struct</code> 函数，它完美地展示了这三个步骤：</p>
+                            <div class="code-toggle bg-slate-100 p-3 rounded-md text-slate-700 font-semibold hover:bg-slate-200 flex justify-between items-center"><span>查看 <code class="inline-code">print_struct</code> 示例代码 <span>▶</span></span></div>
+                            <div class="hidden mt-2">
+                                <pre class="code-block"><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;meta&gt;
+
+struct Person {
+    std::string name;
+    int age;
+};
+
+template&lt;typename T&gt;
+void print_struct(const T& value) {
+    // 步骤 1：自省 (Introspection)
+    // 使用 ^^ 运算符获取类型 T 的元信息，并查询其所有非静态成员。
+    constexpr auto members = std::meta::nonstatic_data_members_of(^^T);
+
+    std::cout << "{ ";
+    // 像遍历普通数组一样遍历成员元信息
+    for (auto member_info : members) {
+        // 步骤 2 & 3：查询 (Querying) 与 生成 (Generation)
+        // 使用元函数 identifier_of 查询成员名称，
+        // 并使用注入器 [:member_info:] 生成访问成员的代码 (value.name, value.age)。
+        std::cout << std::meta::identifier_of(member_info) << ": "
+                  << value.[:member_info:] << "; ";
+    }
+    std::cout << "}\n";
+}
+
+int main() {
+    Person p{"Jane Doe", 28};
+    print_struct(p); // 输出: { name: Jane Doe; age: 28; }
+}</code></pre>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -697,6 +732,7 @@ int main() {
     </script>
 </body>
 </html>
+
 
 
 
