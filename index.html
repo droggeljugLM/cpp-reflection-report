@@ -300,26 +300,92 @@ int main() {
                     <h2 class="text-3xl font-bold text-center mb-2 text-slate-800">C++反射的进展</h2>
                     <p class="text-xl text-center text-blue-600 mb-8">从缺席到曙光</p>
                     <p class="mb-10 text-slate-600 leading-relaxed">一直以来，标准 C++ 都缺席原生反射支持。这是一个“蓄谋已久”的特性，只是因实现复杂度和哲学取舍而迟迟未能定案。以下是 C++ 反射特性的演进时间线：</p>
-                    <div class="space-y-6 border-l-2 border-blue-200 ml-4 pl-8">
+                    <div class="space-y-8 border-l-2 border-blue-200 ml-4 pl-8">
                         <div class="relative">
                             <div class="absolute -left-10 h-5 w-5 bg-blue-500 rounded-full border-4 border-white"></div>
                             <h4 class="font-bold text-lg text-slate-700">技术探索阶段 (C++11 ~ C++17)</h4>
                             <p class="text-slate-600">此阶段标准虽未直接支持反射，但通过引入可变模板参数、<code class="inline-code">constexpr</code> 函数、类型特征库等，为未来的编译期元编程打下了坚实基础。社区的自发探索（如 RTTR, Boost.Hana）证明了需求的迫切性，并为标准委员会提供了宝贵的实践经验。</p>
+                            <p class="mb-4 mt-4 text-slate-600">例如，在没有原生反射的情况下，开发者们不得不使用复杂的模板技巧来推断一个结构体的成员数量，代码晦涩难懂：</p>
+                            <div class="code-toggle bg-slate-100 p-3 rounded-md text-slate-700 font-semibold hover:bg-slate-200 flex justify-between items-center"><span>查看 TMP 技巧示例代码 <span>▶</span></span></div>
+                            <div class="hidden mt-2">
+                                <pre class="code-block"><code class="language-cpp">// C++17 中一种推断成员数量的“黑科技”
+template &lt;typename T&gt;
+constexpr auto count_members() {
+    if constexpr (requires { T{}; }) {
+        auto [p1, p2, p3, p4] = T{}; // 尝试解构4个成员
+        return 4;
+    } else if constexpr (requires { T{}; }) {
+        auto [p1, p2, p3] = T{}; // 尝试解构3个成员
+        return 3;
+    } // ... 以此类推
+    return 0;
+}</code></pre>
+                            </div>
                         </div>
                         <div class="relative">
                             <div class="absolute -left-10 h-5 w-5 bg-blue-500 rounded-full border-4 border-white"></div>
                             <h4 class="font-bold text-lg text-slate-700">Reflection TS 发布 (2019 年)</h4>
                             <p class="text-slate-600">这是 C++ 反射标准化的第一次正式尝试。它证明了在 C++ 中实现反射是可行的，但其复杂的模板语法也让委员会意识到，必须寻找一种更简单、更符合常规 C++ 编程习惯的模型，才能让该特性被广大开发者接受。</p>
+                             <p class="mb-4 mt-4 text-slate-600">当时提案的语法风格非常依赖模板，代码读起来更像是元编程，而非普通业务逻辑。以下是一个模拟其风格的伪代码示例：</p>
+                            <div class="code-toggle bg-slate-100 p-3 rounded-md text-slate-700 font-semibold hover:bg-slate-200 flex justify-between items-center"><span>查看 Reflection TS 风格伪代码 <span>▶</span></span></div>
+                            <div class="hidden mt-2">
+                                <pre class="code-block"><code class="language-cpp">// 伪代码：模拟 Reflection TS 的风格
+template &lt;typename T&gt;
+void print_members() {
+    // reflexpr(T) 返回一个元信息类型
+    using meta_info = reflexpr(T);
+    // get_data_members_v 是一个元编程变量模板
+    for_each(get_data_members_v&lt;meta_info&gt;, [](auto member_meta) {
+        // member_meta 仍然是一个类型，需要用 ::name 访问其静态成员
+        std::cout << member_meta::name << std::endl;
+    });
+}</code></pre>
+                            </div>
                         </div>
                         <div class="relative">
                             <div class="absolute -left-10 h-5 w-5 bg-blue-500 rounded-full border-4 border-white"></div>
                             <h4 class="font-bold text-lg text-slate-700">C++20 的铺垫</h4>
                             <p class="text-slate-600">尽管反射未能进入 C++20，但该标准通过引入 <code class="inline-code">consteval</code>（保证函数在编译期执行）和扩展 <code class="inline-code">constexpr</code> 的能力，为静态反射的实现提供了关键的底层技术支持。可以说，没有 C++20 的这些改进，后续的静态反射提案将寸步难行。</p>
+                            <p class="mb-4 mt-4 text-slate-600">例如，<code class="inline-code">consteval</code> 保证了元函数一定在编译期执行，而 <code class="inline-code">constexpr</code> 则允许在编译期使用 <code class="inline-code">std::string</code> 和 <code class="inline-code">std::vector</code> 等动态容器，这对于处理元信息至关重要。</p>
+                             <div class="code-toggle bg-slate-100 p-3 rounded-md text-slate-700 font-semibold hover:bg-slate-200 flex justify-between items-center"><span>查看 C++20 <code class="inline-code">consteval</code>/<code class="inline-code">constexpr</code> 示例 <span>▶</span></span></div>
+                            <div class="hidden mt-2">
+                                <pre class="code-block"><code class="language-cpp">// consteval 强制函数在编译期执行
+consteval int factorial(int n) {
+    return n <= 1 ? 1 : n * factorial(n - 1);
+}
+
+// C++20起，constexpr函数可以使用std::string和std::vector
+constexpr std::string make_greeting(std::string_view name) {
+    std::string result = "Hello, ";
+    result += name;
+    result += "!";
+    return result;
+}
+
+// 在编译期计算
+static_assert(factorial(5) == 120);
+constexpr std::string greeting = make_greeting("World");
+</code></pre>
+                            </div>
                         </div>
                         <div class="relative">
                             <div class="absolute -left-10 h-5 w-5 bg-blue-500 rounded-full border-4 border-white"></div>
                             <h4 class="font-bold text-lg text-slate-700">新方案 P2996 (C++23 期间)</h4>
                             <p class="text-slate-600">这是决定性的一步。委员会明确了“静态反射”为最终方向，并采纳了基于值的反射模型。这意味着元编程将不再是晦涩的模板技巧，而是使用常规函数和操作符来处理代表元信息的“值”。这一转变极大地降低了反射的使用门槛。</p>
+                            <p class="mb-4 mt-4 text-slate-600">这种新方案让反射代码变得极为清晰。例如，获取一个类型所有成员的名字，可以像下面这样直观地完成：</p>
+                            <div class="code-toggle bg-slate-100 p-3 rounded-md text-slate-700 font-semibold hover:bg-slate-200 flex justify-between items-center"><span>查看 P2996 风格示例代码 <span>▶</span></span></div>
+                            <div class="hidden mt-2">
+                                <pre class="code-block"><code class="language-cpp">template&lt;typename T&gt;
+consteval auto get_member_names() {
+    std::vector&lt;std::string_view&gt; names;
+    // 直接遍历成员元信息
+    for (auto member : std::meta::nonstatic_data_members_of(^^T)) {
+        // 调用普通函数获取名字
+        names.push_back(std::meta::identifier_of(member));
+    }
+    return names;
+}</code></pre>
+                            </div>
                         </div>
                         <div class="relative">
                             <div class="absolute -left-10 h-5 w-5 bg-blue-500 rounded-full border-4 border-white"></div>
@@ -329,7 +395,7 @@ int main() {
                     </div>
                 </div>
             </section>
-
+            
             <section id="new_paradigm" class="content-section">
                 <div class="max-w-4xl mx-auto">
                     <h2 class="text-3xl font-bold text-center mb-2 text-slate-800">新范式</h2>
@@ -732,6 +798,7 @@ int main() {
     </script>
 </body>
 </html>
+
 
 
 
