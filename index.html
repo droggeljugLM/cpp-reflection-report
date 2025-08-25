@@ -326,8 +326,8 @@ constexpr auto count_members() {
                             <div class="absolute -left-10 h-5 w-5 bg-blue-500 rounded-full border-4 border-white"></div>
                             <h4 class="font-bold text-lg text-slate-700">Reflection TS 发布 (2019 年)</h4>
                             <p class="text-slate-600">这是 C++ 反射标准化的第一次正式尝试。它证明了在 C++ 中实现反射是可行的，但其复杂的模板语法也让委员会意识到，必须寻找一种更简单、更符合常规 C++ 编程习惯的模型，才能让该特性被广大开发者接受。</p>
-                             <p class="mb-4 mt-4 text-slate-600">当时提案的语法风格非常依赖模板，代码读起来更像是元编程，而非普通业务逻辑。以下是一个模拟其风格的伪代码示例：</p>
-                            <div class="code-toggle bg-slate-100 p-3 rounded-md text-slate-700 font-semibold hover:bg-slate-200 flex justify-between items-center"><span>查看 Reflection TS 风格伪代码 <span>▶</span></span></div>
+                             <p class="mb-4 mt-4 text-slate-600">当时提案的语法风格非常依赖模板，代码读起来更像是元编程，而非普通业务逻辑。以下是一个模拟其风格的代码示例：</p>
+                            <div class="code-toggle bg-slate-100 p-3 rounded-md text-slate-700 font-semibold hover:bg-slate-200 flex justify-between items-center"><span>查看 Reflection TS 风格代码 <span>▶</span></span></div>
                             <div class="hidden mt-2">
                                 <pre class="code-block"><code class="language-cpp">// 给定一个类型 T
 constexpr auto metaT = reflexpr(T);          // 得到 "T" 的元对象
@@ -799,6 +799,7 @@ int main() {
     </script>
 </body>
 </html>
+
 
 
 
