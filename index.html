@@ -128,6 +128,8 @@
                             <p class="text-right mt-4 font-semibold text-slate-600">— Herb Sutter, ISO C++ 委员会主席</p>
                         </div>
                         <p>这充分说明了，我们所讨论的“全新语言”并非夸张之词，而是专家们对未来的共识。</p>
+                        <p>本文将带领读者踏上一段旅程。首先，我们将回顾在没有原生反射支持的“模拟时代”，C++ 开发者们为了实现类似功能所付出的艰辛努力。接着，我们将深入剖析 C++26 标准中提出的优雅且遵循零开销原则的解决方案。最后，通过序列化、对象关系映射（ORM）等具体实例，我们将展示这一特性如何为 C++ 开发开启一个全新的时代，并证明为何说这门语言已经获得了新生。</p>
+                    </div>
                     <div class="mt-12 pt-8 border-t border-slate-200 flex justify-end">
                         <a href="#" class="page-nav-btn bg-slate-200 text-slate-700 font-semibold py-2 px-4 rounded-lg hover:bg-slate-300 transition-colors" data-target="whatis">下一节：反射是什么 →</a>
                     </div>
@@ -661,6 +663,27 @@ int main() {
                         <div>
                             <h3 class="text-2xl font-semibold mb-3 text-slate-700">通用库的民主化</h3>
                             <p class="mb-4 text-slate-600">反射的威力远不止于数据处理。它将极大地简化通用库的设计。以一个命令行参数解析库为例，用户只需以一种声明式的方式描述他们的需求，所有复杂的命令式实现都由库在编译期完成。这揭示了一个更深层次的转变：<strong>从语言特性到库特性</strong>。创新的能力从语言设计者下放给了广大的库开发者社区。</p>
+                            <p class="mb-4 text-slate-600">在这个设想中，库的 <code class="inline-code">parse</code> 函数会在编译期对 <code class="inline-code">Args</code> 结构体进行反射，自动生成所有解析逻辑和帮助信息：</p>
+                            <div class="code-toggle bg-slate-100 p-3 rounded-md text-slate-700 font-semibold hover:bg-slate-200 flex justify-between items-center"><span>查看命令行解析库示例代码 <span>▶</span></span></div>
+                            <div class="hidden mt-2">
+                                <pre class="code-block"><code class="language-cpp">#include "clap.hpp" // 假设的反射驱动的库
+
+struct Args {
+    [[short_name("n"), long_name("name")]]
+    std::string name;
+
+    [[help("Number of times to repeat the greeting")]]
+    [[long_name("count")]]
+    int count = 1;
+};
+
+int main(int argc, char** argv) {
+    auto args = clap::parse&lt;Args&gt;(argc, argv);
+    for (int i = 0; i < args.count; ++i) {
+        std::cout << "Hello, " << args.name << "!\n";
+    }
+}</code></pre>
+                            </div>
                         </div>
                     </div>
                      <div class="mt-12 pt-8 border-t border-slate-200 flex justify-between">
