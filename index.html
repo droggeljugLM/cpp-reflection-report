@@ -329,16 +329,17 @@ constexpr auto count_members() {
                              <p class="mb-4 mt-4 text-slate-600">当时提案的语法风格非常依赖模板，代码读起来更像是元编程，而非普通业务逻辑。以下是一个模拟其风格的伪代码示例：</p>
                             <div class="code-toggle bg-slate-100 p-3 rounded-md text-slate-700 font-semibold hover:bg-slate-200 flex justify-between items-center"><span>查看 Reflection TS 风格伪代码 <span>▶</span></span></div>
                             <div class="hidden mt-2">
-                                <pre class="code-block"><code class="language-cpp">// 伪代码：模拟 Reflection TS 的风格
-template &lt;typename T&gt;
-void print_members() {
-    // reflexpr(T) 返回一个元信息类型
-    using meta_info = reflexpr(T);
-    // get_data_members_v 是一个元编程变量模板
-    for_each(get_data_members_v&lt;meta_info&gt;, [](auto member_meta) {
-        // member_meta 仍然是一个类型，需要用 ::name 访问其静态成员
-        std::cout << member_meta::name << std::endl;
-    });
+                                <pre class="code-block"><code class="language-cpp">// 给定一个类型 T
+constexpr auto metaT = reflexpr(T);          // 得到 "T" 的元对象
+
+// 查询 T 的所有成员
+constexpr auto members = metaT ^ data_members;
+
+// 遍历每个成员元对象
+for (auto m : members) {
+    auto name  = get_name(m);                // 成员的名字
+    auto value = obj.^m;                     // 注入访问该成员的表达式
+    // ... 做一些处理（打印 / 序列化 / 比较 等）
 }</code></pre>
                             </div>
                         </div>
@@ -798,6 +799,7 @@ int main() {
     </script>
 </body>
 </html>
+
 
 
 
