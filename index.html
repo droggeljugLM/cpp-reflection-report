@@ -608,20 +608,59 @@ int main() {
                              <p class="mb-4 mt-4 text-slate-600">同样地，我们也可以利用反射来编写一个通用的 `from_json` 函数，用于将 JSON 数据解析回 C++ 对象：</p>
                             <div class="code-toggle bg-slate-100 p-3 rounded-md text-slate-700 font-semibold hover:bg-slate-200 flex justify-between items-center"><span>查看通用 <code class="inline-code">from_json</code> 示例代码 <span>▶</span></span></div>
                             <div class="hidden mt-2">
-                                <pre class="code-block"><code class="language-cpp">template&lt;typename T&gt;
+                                <pre class="code-block"><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;variant&gt;
+#include &lt;meta&gt;
+
+// --- 为构成完整示例所需的模拟代码 ---
+using JsonValue = std::variant&lt;int, bool, std::string&gt;;
+using JsonObject = std::map&lt;std::string, JsonValue&gt;;
+
+template&lt;typename T&gt;
+T to_type(const JsonValue& val);
+
+template&lt;&gt;
+int to_type&lt;int&gt;(const JsonValue& val) { return std::get&lt;int&gt;(val); }
+template&lt;&gt;
+bool to_type&lt;bool&gt;(const JsonValue& val) { return std::get&lt;bool&gt;(val); }
+template&lt;&gt;
+std::string to_type&lt;std::string&gt;(const JsonValue& val) { return std::get&lt;std::string&gt;(val); }
+// --- 模拟代码结束 ---
+
+struct User {
+    int id;
+    std::string username;
+    bool is_active;
+};
+
+template&lt;typename T&gt;
 T from_json(const JsonObject& json) {
     T obj;
     constexpr auto members = std::meta::nonstatic_data_members_of(^^T);
     for (auto member : members) {
-        // 获取成员名
-        const auto name = std::meta::identifier_of(member);
-        if (json.contains(name)) {
-            // 从JSON对象中获取值并赋给对象的相应成员
-            // 此处需要一个辅助函数 to_type 来处理类型转换
-            obj.[:member:] = to_type&lt;[:std::meta::type_of(member):]&gt;(json[name]);
+        const auto name = std::string(std::meta::identifier_of(member));
+        if (json.count(name)) {
+            obj.[:member:] = to_type&lt;[:std::meta::type_of(member):]&gt;(json.at(name));
         }
     }
     return obj;
+}
+
+int main() {
+    JsonObject user_json = {
+        {"id", 101},
+        {"username", std::string("alex")},
+        {"is_active", true}
+    };
+
+    User u = from_json&lt;User&gt;(user_json);
+
+    std::cout << "User ID: " << u.id << std::endl;
+    std::cout << "Username: " << u.username << std::endl;
+    std::cout << std::boolalpha << "Is Active: " << u.is_active << std::endl;
+    return 0;
 }</code></pre>
                             </div>
                         </div>
